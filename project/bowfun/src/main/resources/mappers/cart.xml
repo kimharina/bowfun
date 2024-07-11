@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.care.bowfun.cart.CartMapper">
+
+	<resultMap type="com.care.bowfun.cart.CartDTO"
+		id="cart_bowfun">
+		<id column="item_code" property="itemCode" />
+		<result column="mem_id" property="memId" />
+	</resultMap>
+	
+
+<!-- 	<update id="addCartProc" -->
+<!-- 		parameterType="com.care.bowfun.cart.CartDTO"> -->
+<!-- 		UPDATE CART_BOWFUN  -->
+<!-- 		SET quantity = #{quantity}  -->
+<!-- 		WHERE cnum = #{itemCode} -->
+<!-- 	</update> -->
+	<update id="updateQuantity"
+		parameterType="com.care.bowfun.cart.CartDTO">
+		UPDATE CART_BOWFUN
+		SET quantity = #{quantity}
+		WHERE mem_id = #{memId} AND item_code = #{itemCode}
+	</update>
+	
+	
+	<select id="getCartItems" resultMap="cart_bowfun">
+		SELECT * FROM cart_bowfun
+	</select>
+	
+	<delete id="deleteCart" parameterType="com.care.bowfun.cart.CartDTO">
+	    DELETE FROM cart_BOWFUN WHERE item_code = #{itemCode} AND MEM_ID = #{id}
+	</delete>
+	
+	<select id="tan" resultMap="cart_bowfun">
+		select * from cart_bowfun where item_code=#{itemCode} and mem_id=#{id}
+	</select>
+
+
+		
+	
+
+</mapper>

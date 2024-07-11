@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+
+  build:
+    commands:
+      - echo "Build started on `date`"
+      - cd $CODEBUILD_SRC_DIR
+      - mvn clean package -f bowfun/pom.xml
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+      - cd $CODEBUILD_SRC_DIR/bowfun
+      - ls -R
+artifacts:
+  files:
+    - bowfun/target/bowfun-0.0.1-SNAPSHOT.war
+    - bowfun/appspec.yml  # CodeDeploy 추가
+    - bowfun/scripts/**   # CodeDeploy 추가
+  discard-paths: yes
+  
+cache:
+  paths:
+    - '/root/.m2/**/*'

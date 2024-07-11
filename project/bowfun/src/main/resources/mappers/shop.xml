@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.care.bowfun.shop.ShopMapper">
+	<resultMap type="com.care.bowfun.shop.ShopDTO"
+		id="shop_bowfun">
+		<result column="cprice" property="cprice" />
+	</resultMap>
+<!-- INSERT INTO care.CATEGORY_BOWFUN (catename, code) VALUES ('간식', 1);
+    INSERT INTO care.CATEGORY_BOWFUN (catename, code) VALUES ('미용', 2);
+    INSERT INTO care.CATEGORY_BOWFUN (catename, code) VALUES ('패션', 3);
+    INSERT INTO care.CATEGORY_BOWFUN (catename, code) VALUES ('위생', 4); -->
+    
+    
+	<!-- 상품 리스트 -->
+	<!-- <select id="kmart" resultMap="shop_bowfun"> SELECT B.* FROM ( SELECT 
+		ROWNUM as r, A.*, C.CATENAME FROM (SELECT * FROM shop_bowfun ORDER BY cnum 
+		ASC) A, CATEGORY_BOWFUN C WHERE A.CODE=C.CODE ) B WHERE B.r BETWEEN #{begin} 
+		AND #{end} </select> -->
+
+	<select id="kmart" resultMap="shop_bowfun">
+    SELECT B.* FROM (
+        SELECT A.*, C.CATENAME
+        FROM (
+            SELECT * FROM shop_bowfun ORDER BY cnum ASC LIMIT #{begin}, #{end}
+        ) A
+        JOIN care.CATEGORY_BOWFUN C ON A.CODE = C.CODE
+    ) B
+	</select>
+
+	<insert id="shopWriteProc">
+		INSERT INTO shop_bowfun (cnum, code, cname, cimage,
+		cimage1, cprice)
+		VALUES (#{cnum}, #{code}, #{cname}, #{cimage}, #{cimage1}, #{cprice})
+	</insert>
+
+	<update id="shopUpdateProc">
+		update shop_bowfun set cname=#{cname},
+		cimage=#{cimage}, cimage1=#{cimage1}, cprice=#{cprice} where
+		cnum=#{cnum}
+	</update>
+
+	<delete id="shopDeleteProc">
+		delete from shop_bowfun where cnum=#{cnum}
+	</delete>
+
+	<!-- 카테고리 리스트 -->
+	<select id="cateList">
+		SELECT * FROM care.CATEGORY_BOWFUN
+	</select>
+
+	<select id="totalCount">
+		SELECT count(cnum) FROM shop_bowfun
+	</select>
+
+	<select id="kdetail" resultMap="shop_bowfun">
+		SELECT * FROM care.CATEGORY_BOWFUN C
+		INNER JOIN shop_bowfun A ON A.CODE = C.CODE
+		WHERE A.CNUM = #{cnum};
+	</select>
+
+	<!-- 상품 카트 저장 -->
+	<resultMap type="com.care.bowfun.cart.CartDTO"
+		id="cart_bowfun">
+		<id column="cnum" property="itemCode" />
+		<result column="id" property="memId" />
+	</resultMap>
+
+	<insert id="addCartProc">
+		insert into cart_bowfun values(#{itemCode}, #{memId},
+		#{quantity})
+	</insert>
+
+
+	<select id="getShopItems" resultMap="shop_bowfun">
+		SELECT * FROM care.shop_bowfun
+	</select>
+
+	<select id="getCombinedItems"
+		parameterType="com.care.bowfun.shop.CombinedDTO">
+		SELECT
+		A.CNUM, C.CATENAME, A.CNAME, A.CIMAGE, A.CIMAGE1,
+		A.CPRICE,
+		B.item_code AS itemCode, B.quantity
+		FROM
+		shop_bowfun A
+		JOIN
+		cart_bowfun B ON A.cnum = B.item_code
+		JOIN
+		CATEGORY_BOWFUN C ON A.CODE =
+		C.CODE
+		WHERE
+		B.MEM_ID = #{memId}
+	</select>
+</mapper>

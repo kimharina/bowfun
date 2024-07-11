@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- window - preferences - Maven - "Download Artifact Javadoc" check -->
+<mapper namespace="com.care.bowfun.member.IMemberMapper">
+	<resultMap type="com.care.bowfun.member.MemberDTO"
+		id="bowfun">
+		<id column="id" property="id" />
+		<result column="pw" property="pw" />
+		<result column="email" property="email" />
+		<result column="userName" property="userName" />
+		<result column="address" property="address" />
+		<result column="mobile" property="mobile" />
+	</resultMap>
+
+	<insert id="registProc">
+		insert into member_bowfun values(#{id}, #{pw},
+		#{userName}, #{address}, #{mobile}, #{email})
+	</insert>
+
+	<select id="findEmail" resultMap="bowfun">
+		select * from member_bowfun where email=#{email}
+	</select>
+
+	<select id="login" resultMap="bowfun">
+		select * from member_bowfun where id=#{id}
+	</select>
+	
+	<update id="updateProc">
+		update member_bowfun set pw=#{pw}, mobile=#{mobile},
+		userName=#{userName}, address=#{address}, email=#{email} where
+		id=#{id}
+	</update>
+
+	<delete id="deleteProc">
+		delete from member_bowfun where id=#{id}
+	</delete>
+	
+    <select id="getMemberByEmail" resultType="com.care.bowfun.member.MemberDTO">
+        SELECT * FROM member_bowfun WHERE email=#{email}
+    </select>
+    
+    <select id="getMemberByUserName" resultType="com.care.bowfun.member.MemberDTO">
+        SELECT * FROM member_bowfun WHERE userName=#{userName}
+    </select>
+</mapper>

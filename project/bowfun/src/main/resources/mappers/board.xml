@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.care.bowfun.board.BoardMapper">
+   <resultMap type="com.care.bowfun.board.BoardDTO" id="board_bowfun">
+      <result column="writeDate" property="writeDate"/>
+      <result column="fileName" property="fileName"/>
+   </resultMap>
+   
+   <select id="boardForm" resultMap="board_bowfun">
+      SELECT B.* FROM (SELECT ROWNUM() as r, A.* FROM (SELECT board_bowfun.* FROM board_bowfun ORDER BY no DESC)A )B WHERE B.r BETWEEN #{begin} AND #{end}
+   </select>
+   
+   <select id="totalCount">
+      SELECT count(no) FROM board_bowfun
+   </select>
+
+   <!-- <insert id="boardWriteProc" useGeneratedKeys="true" keyProperty="no">
+      <selectKey order="BEFORE" keyProperty="no" resultType="int">
+         SELECT NVL(max(no), 0)+1 FROM board_bowfun
+      </selectKey>
+      INSERT INTO board_bowfun
+      VALUES(#{no}, #{title}, #{content}, #{id}, #{writeDate}, 0, #{fileName})
+   </insert> -->
+   <insert id="boardWriteProc">
+      <selectKey order="BEFORE" keyProperty="no" resultType="int">
+         SELECT NVL(max(no), 0)+1 FROM board_bowfun
+      </selectKey>
+      INSERT INTO board_bowfun
+      VALUES(#{no}, #{title}, #{content}, #{id}, #{writeDate}, 0, #{fileName})
+   </insert>
+   
+   <select id="boardContent">
+      SELECT * FROM board_bowfun WHERE no=#{n}
+   </select>
+   
+   <update id="incrementViews">
+       UPDATE board_bowfun SET views = views + 1 WHERE no=#{n}
+   </update>
+   
+   <select id="boardDownload">
+      SELECT fileName FROM board_bowfun WHERE no=#{n}
+   </select>
+   
+   <update id="boardModifyProc">
+      UPDATE board_bowfun SET title=#{title}, content=#{content} , fileName=#{fileName} WHERE no=#{no}
+   </update>
+   
+<delete id="boardDeleteProc">
+    DELETE FROM board_bowfun WHERE no=#{n}
+</delete>
+</mapper>

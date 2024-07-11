@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.care.bowfun.admin.IAdminMapper">
+    <resultMap type="com.care.bowfun.member.MemberDTO" id="bowfun">
+        <id column="id" property="id"/>
+        <result column="pw" property="pw"/>
+        <result column="email" property="email"/>
+        <result column="userName" property="userName"/>
+        <result column="address" property="address"/>
+        <result column="mobile" property="mobile"/>
+    </resultMap>
+
+    <select id="memberInfo" resultMap="bowfun">
+        <choose>
+            <when test="select == 'id'">
+                select aaa.* from (select rownum() as r, id, userName, email, address, mobile from member_bowfun where id like CONCAT('%', #{search}, '%') aaa where aaa.r between #{begin} and #{end}
+            </when>
+            <when test="select == 'mobile'">
+                select aaa.* from (select rownum() as r, id, userName, email, address, mobile from member_bowfun where mobile like CONCAT('%', #{search}, '%') aaa where aaa.r between #{begin} and #{end}
+            </when>
+            <otherwise>
+                select aaa.* from (select rownum() as r, id, userName, email, address, mobile from member_bowfun) aaa where aaa.r between #{begin} and #{end}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="totalCount">
+        <choose>
+            <when test="select == 'id'">
+                select count(id) from member_bowfun where id like CONCAT('%', #{search}, '%')
+            </when>
+            <when test="select == 'mobile'">
+                select count(id) from member_bowfun where mobile like CONCAT('%', #{search}, '%')
+            </when>
+            <otherwise>
+                select count(id) from member_bowfun
+            </otherwise>
+        </choose>
+    </select>
+
+    <delete id="adminDeleteProc">
+        delete from member_bowfun where id=#{id}
+    </delete>
+</mapper>
