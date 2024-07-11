@@ -32,7 +32,6 @@
 
 - AWS codepipeline
 - AWS cloudwatch
-- AWS S3
 
 ### ✔️codepipeline yml 파일
 
