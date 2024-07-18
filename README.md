@@ -12,7 +12,7 @@
       AWS codepipeline, MariaDB
 
 
-# **1. 프로젝트 구성**
+## **1. 프로젝트 구성**
 
 <aside>
   
